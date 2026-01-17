@@ -50,6 +50,11 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <script src="https://apps.abacus.ai/chatllm/appllm-lib.js" />
+        <script 
+          async 
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3879212699132253"
+          crossOrigin="anonymous"
+        />
       </head>
       <body className={`${inter.className} antialiased bg-gray-50`} suppressHydrationWarning>
         <GoogleAnalytics />

@@ -2,7 +2,9 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 
-const postsDirectory = path.join(process.cwd(), 'posts');
+// Use public/data/posts for production compatibility (public folder is always copied)
+const postsDirectory = path.join(process.cwd(), 'public', 'data', 'posts');
+const altPostsDirectory = path.join(process.cwd(), 'posts');
 
 export interface PostFrontmatter {
   title: string;
@@ -21,15 +23,21 @@ export interface Post extends PostFrontmatter {
 }
 
 export function getAllPosts(): Post[] {
-  if (!fs.existsSync(postsDirectory)) {
+  // Try main directory first, then alternative
+  let dir = postsDirectory;
+  if (!fs.existsSync(dir)) {
+    dir = altPostsDirectory;
+  }
+  if (!fs.existsSync(dir)) {
+    console.error('Posts directory not found:', postsDirectory, 'or', altPostsDirectory);
     return [];
   }
   
-  const fileNames = fs.readdirSync(postsDirectory);
+  const fileNames = fs.readdirSync(dir);
   const allPosts = fileNames
     .filter((fileName) => fileName?.endsWith('.md'))
     .map((fileName) => {
-      const fullPath = path.join(postsDirectory, fileName);
+      const fullPath = path.join(dir, fileName);
       const fileContents = fs.readFileSync(fullPath, 'utf8');
       const { data, content } = matter(fileContents);
       
